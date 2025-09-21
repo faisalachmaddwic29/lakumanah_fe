@@ -23,6 +23,15 @@
           Masuk
         </Button>
 
+        <Button
+          variant="default"
+          size="lg"
+          class="w-full mt-4 cursor-pointer"
+          @click="router.push('/leaderboard')"
+        >
+          Lihat Leaderboard
+        </Button>
+
         <NuxtImg src="/images/powered-by-white.svg" alt="line" class="w-full h-[29px] mx-auto mt-[20px]" />
 
       </div>

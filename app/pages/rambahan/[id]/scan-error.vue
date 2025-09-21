@@ -19,24 +19,25 @@
     <div class="flex flex-col gap-y-3 w-full px-4">
       <p class="font-bold text-xl">Rambahan ke-{{ rambahanId }}</p>
 
-      <NuxtImg src="/images/illustration/scanner.png" alt="rambahan" class="w-full mt-20 px-6" />
+      <NuxtImg src="/images/illustration/scanner-failed.png" alt="rambahan" class="w-full mt-20 px-6" />
 
       <div class="text-center mt-5">
-        <h3 class="mb-2.5 text-xl font-bold">Scan Peserta</h3>
-        <p class="text-base font-light">Lakukan scan masing-masing peserta untuk<br>melakukan penilaian scoring pada peserta tersebut.</p>
+        <h3 class="mb-2.5 text-xl font-bold">Terjadi Kesalahan</h3>
+        <p class="text-base font-light">Silakan coba lagi beberapa saat lagi.</p>
       </div>
     </div>
 
     <div class="fixed w-full z-10 bottom-0 left-0 bg-grey py-4">
       <AppContainer>
-        <Button class="w-full flex items-center gap-1" type="button" @click="router.push(`/rambahan/${rambahanId}/scan-error`) ">
+        <Button class="w-full flex items-center gap-1" type="button" @click="router.push(`/rambahan/${rambahanId}/scan`) ">
           <Icon name="heroicons:viewfinder-circle" class="text-2xl" />
-          <span>Scan Peserta</span>
+          <span>Scan Ulang Peserta</span>
         </Button>
       </AppContainer>
     </div>
   </div>
 </template>
+
 
 <script setup lang="ts">
 const route = useRoute()
