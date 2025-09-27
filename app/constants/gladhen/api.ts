@@ -1,8 +1,9 @@
 // V1
 
-const urlApiCommunity = '/v1/community';
-const urlApiLocations = '/v1/locations';
-const urlApiCategories = '/v1/categories';
-const urlApiParticipants = urlApiCommunity + '/participants';
+const urlApiScoring = '/v1/scoring';
+const urlApiScoringRambahan = urlApiScoring + '/rambahan';
 
-export { urlApiCommunity, urlApiLocations, urlApiCategories, urlApiParticipants };
+// Leaderboard
+const urlApiLeaderboard = '/v1/leaderboard';
+
+export { urlApiScoring, urlApiScoringRambahan, urlApiLeaderboard };

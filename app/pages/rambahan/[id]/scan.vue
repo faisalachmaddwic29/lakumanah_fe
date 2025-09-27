@@ -24,7 +24,32 @@
       <!-- Scan QR -->
       <template v-if="activeTab === 'scan'">
         <!-- Kamera -->
-        <StreamBarcodeReader class="w-full h-full object-cover rounded-xl" />
+        <!-- <QrcodeStream class="w-full h-full object-cover rounded-xl" @decode="onDecode" @error="onError" /> -->
+        <div class="relative w-full max-w-md aspect-square">
+        <!-- Kamera -->
+          <div class="flex flex-col items-center">
+            <QrcodeStream
+              class="w-80 h-80 rounded-xl overflow-hidden"
+              :paused="paused"
+              @detect="onDetect"
+              @init="onInit"
+            />
+
+            <div v-if="result" class="mt-4 p-3 bg-white rounded-lg shadow">
+              <p class="text-sm font-semibold">Hasil:</p>
+              <a
+                v-if="isUrl(result)"
+                :href="result"
+                target="_blank"
+                class="text-blue-600 underline break-all"
+              >
+                {{ result }}
+              </a>
+              <p v-else>{{ result }}</p>
+            </div>
+          </div>
+      </div>
+
 
         <!-- Overlay Scanner -->
         <div class="absolute inset-0 flex justify-center items-center">
@@ -80,7 +105,8 @@
 </template>
 
 <script setup lang="ts">
-import { StreamBarcodeReader } from "vue-barcode-reader"
+// import { StreamBarcodeReader } from "vue-barcode-reader"
+import { QrcodeStream } from "vue-qrcode-reader"
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import { z } from 'zod'
@@ -154,5 +180,49 @@ const onSubmit = handleSubmit(async (values) => {
 	}
 });
 
+
+const result = ref("")
+const paused = ref(false) // 👉 kontrol scanner
+let resetTimer: any = null
+
+const isUrl = (text: string) => {
+  try {
+    new URL(text)
+    return true
+  } catch {
+    return false
+  }
+}
+
+const showResult = (value: string) => {
+  result.value = value
+  paused.value = true // 🚨 stop scanner biar cache reset
+
+  // auto resume setelah 1.5 detik
+  if (resetTimer) clearTimeout(resetTimer)
+  resetTimer = setTimeout(() => {
+    result.value = ""
+    paused.value = false // 🚀 nyalain lagi biar bisa scan ulang QR yang sama
+  }, 1500)
+}
+
+const onDetect = (codes) => {
+  if (!codes.length) return
+
+  const value = codes[0].rawValue
+  if (value) {
+    console.log("👀 QR detect:", value)
+    showResult(value)
+  }
+}
+
+const onInit = async (promise) => {
+  try {
+    await promise
+    console.log("✅ Kamera aktif")
+  } catch (err) {
+    console.error("🚨 Gagal buka kamera:", err)
+  }
+}
 
 </script>

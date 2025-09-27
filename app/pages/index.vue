@@ -20,16 +20,16 @@
     <!-- Body -->
     <div class="relative flex-1 mt-4 w-full">
       <!-- Community -->
-      <div class="content-community px-4">
-        <ContentsHomeCommunityLoading v-if="!appStore.isCommunityLoaded" />
+      <div class="content-event px-4">
+        <ContentsHomeEventLoading v-if="!appStore.isEventLoaded" />
 
-        <ContentsHomeCommunity v-else-if="appStore.community" :community="appStore.community" />
-        <ContentsHomeNoCommunity v-else />
+        <ContentsHomeEvent v-else-if="appStore.eventInfo" :event="appStore.eventInfo" />
+        <ContentsHomeNoEvent v-else />
       </div>
 
       <!-- List Rambahan -->
       <div class="px-4 relative flex-1 my-4 w-full h-full">
-        <ContentsHomeRambahan />
+        <ContentsHomeRambahan :total="appStore.eventRambahan.length" />
       </div>
     </div>
   </div>
@@ -53,6 +53,6 @@ useSeoMeta({
 const appStore = useAppStore();
 
 onMounted(() => {
-    appStore.fetchCommunity();
+    appStore.fetchEvents();
 })
 </script>

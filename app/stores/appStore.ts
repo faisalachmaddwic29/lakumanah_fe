@@ -1,51 +1,54 @@
 import { defineStore } from 'pinia'
-import type { Categories, CategoriesResponse, Community, CommunityResponse, Locations, LocationsResponse } from '~/types/api';
+import type { EventCategories, EventInfo, EventLeaderboardResponse, EventResponse, Rambahan } from '~/types/api';
 
 export const useAppStore = defineStore("app", {
   state: () => ({
-    community: null as Community | null,
-    locations: [] as Locations,
-    categories: [] as Categories,
-    isCommunityLoaded: false,
-    isLocationsLoaded: false,
-    isCategoriesLoaded: false,
+    eventInfo: null as EventInfo | null,
+    eventRambahan: [] as Rambahan,
+    leaderboardEventInfo: null as EventInfo | null,
+    leaderboardCategories: [] as EventCategories,
+    isEventLoaded: false,
+    isLeaderboardLoaded: false,
   }),
   actions: {
-    async fetchCommunity() {
-      if (this.isCommunityLoaded) return;
+    async fetchEvents() {
+      if (this.isEventLoaded) return;
 
       try {
-        const { data } = await apiLakumanah.get<CommunityResponse>(urlApiCommunity);
-        this.community = data?.community ?? [];
+        const { data } = await apiLakumanah.get<EventResponse>(urlApiScoringRambahan);
+        this.eventInfo = data?.event_info ?? null;
+        this.eventRambahan = data?.rambahan ?? [];
       } catch (error: unknown) {
-        this.community = null;
+        this.eventInfo = null;
+        this.eventRambahan = [];
         console.error(error);
       } finally {
-        this.isCommunityLoaded = true;
+        this.isEventLoaded = true;
       }
     },
-    async fetchLocations() {
-      if (this.isLocationsLoaded) return;
+    async fetchLeaderboards() {
+      if (this.isLeaderboardLoaded) return;
 
-      const { data } = await apiLakumanah.get<LocationsResponse>(urlApiLocations);
-      this.locations = data?.locations ?? [];
-      this.isLocationsLoaded = true;
-    },
-    async fetchCategories() {
-      if (this.isCategoriesLoaded) return;
-
-      const { data } = await apiLakumanah.get<CategoriesResponse>(urlApiCategories);
-      this.categories = data?.categories ?? [];
-      this.isCategoriesLoaded = true;
+      try {
+        const { data } = await apiLakumanah.get<EventLeaderboardResponse>(urlApiLeaderboard);
+        this.leaderboardEventInfo = data?.event_info ?? null;
+        this.leaderboardCategories = data?.categories ?? [];
+      } catch (error: unknown) {
+        this.leaderboardEventInfo = null;
+        this.leaderboardCategories = [];
+        console.error(error);
+      } finally {
+        this.isLeaderboardLoaded = true;
+      }
     },
     // Optional reset, useful for full refresh / logout
     reset() {
-      this.community = null;
-      this.locations = [];
-      this.categories = [];
-      this.isCommunityLoaded = false;
-      this.isLocationsLoaded = false;
-      this.isCategoriesLoaded = false;
+      this.eventInfo = null;
+      this.eventRambahan = [];
+      this.leaderboardEventInfo = null;
+      this.leaderboardCategories = [];
+      this.isEventLoaded = false;
+      this.isLeaderboardLoaded = false;
 
     }
   },

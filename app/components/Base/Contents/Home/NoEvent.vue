@@ -8,12 +8,12 @@
       </div>
 
       <!-- footer -->
-      <Button type="button" variant="default" class="w-full mt-3 cursor-pointer" @click="$router.push('/community/add')">
+      <!-- <Button type="button" variant="default" class="w-full mt-3 cursor-pointer" @click="$router.push('/community/add')">
         <Icon name="material-symbols:add" class="text-md" />
         <span class="text-sm">Buat Acara</span>
-      </Button>
+      </Button> -->
 
-      <NuxtImg src="/images/powered-by-grey.svg" alt="line" class="w-full h-[24px] mx-auto mt-2" />
+      <NuxtImg src="/images/powered-by-grey.svg" alt="line" class="w-full h-[24px] mx-auto mt-16" />
     </div>
 
   </div>

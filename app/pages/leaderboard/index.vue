@@ -18,62 +18,22 @@
 
     <div class="flex flex-col gap-y-5 w-full px-4">
       <!-- Community -->
-      <div class="bg-primary rounded-xl shadow-xl overflow-hidden">
-        <NuxtImg src="/images/auth/cities.png" alt="line" class="w-full pt-3" />
+      <ContentsHomeLeaderboardLoading v-if="!appStore.isLeaderboardLoaded" />
 
-        <div class="content-community flex flex-col gap-2.5 p-3 bg-white">
-          <h3 class="font-bold text-lg leading-tight">Gladhen Kulonprogo 2025</h3>
-
-          <LabelIcon class="w-full items-start text-dark-grey">
-            <template #icon>
-              <NuxtImg src="/icons/map-pin.svg" alt="location" class="size-6 mt-0.5" />
-            </template>
-            <template #label>
-                <div class="flex flex-col gap-y-0.5">
-                  <h3 class="font-semibold text-sm tracking-wide">Gladhen Kulonprogo 2025</h3>
-                  <p class="text-xs text-gray-400">Jl Faisal</p>
-                </div>
-            </template>
-          </LabelIcon>
-
-          <LabelIcon class="w-full items-center text-dark-grey">
-            <template #icon>
-              <NuxtImg src="/icons/user-group.svg" alt="user-group" class="size-6 mt-0.5" />
-            </template>
-            <template #label>
-              <div class="text-sm font-medium">
-                324 Peserta
-              </div>
-            </template>
-          </LabelIcon>
-
-          <LabelIcon class="w-full items-center text-dark-grey">
-            <template #icon>
-              <NuxtImg src="/icons/calendar-days.svg" alt="calendar-days" class="size-6 mt-0.5" />
-            </template>
-            <template #label>
-              <div class="text-sm font-medium">
-                2 September 2025
-              </div>
-            </template>
-          </LabelIcon>
-
-          <NuxtImg src="/images/powered-by-grey.svg" alt="line" class="w-full h-[29px] mx-auto" />
-
-        </div>
-      </div>
+      <ContentsHomeLeaderboard v-else :event="appStore.leaderboardEventInfo" />
 
       <!-- List Categories -->
       <div class="flex flex-col gap-y-2.5 w-full text-[#627086] font-lato">
         <p class="text-base font-bold">Kategori</p>
 
         <!-- Listnya -->
-        <div class="flex flex-col gap-y-2.5 w-full">
+        <CardListLoading v-if="!appStore.isLeaderboardLoaded" :length="5"  />
+        <div v-else class="flex flex-col gap-y-2.5 w-full">
           <div
-            v-for="item in data_categories"
+            v-for="item in appStore.leaderboardCategories"
             :key="item.id"
             class="w-full h-full border border-[#DFDFDF] p-3 rounded-lg cursor-pointer flex items-center justify-between"
-            @click="handleCategories(1)">
+            @click="handleCategories(item.id, item.name, item.total_participant)">
             <div class="flex flex-col gap-1">
               <p class="font-bold text-black">{{ item.name }}</p>
               <LabelIcon class="w-full items-center text-dark-grey">
@@ -82,7 +42,7 @@
                 </template>
                 <template #label>
                   <div class="text-xs font-normal">
-                    {{ item.total }} Peserta
+                    {{ item.total_participant }} Peserta
                   </div>
                 </template>
               </LabelIcon>
@@ -101,7 +61,6 @@ const title = "Leaderboard";
 definePageMeta({
   layout: "default",
   isPaddingTop: true,
-  isPaddingBottom: true,
   title: title,
 })
 
@@ -109,36 +68,21 @@ useSeoMeta({
   title: title,
 })
 
-const handleCategories = (id: number) => {
-  console.log("ID Kategori:", id)
-}
+const appStore = useAppStore();
 
-const data_categories = [
-  {
-    id: 1,
-    name: "Dewasa - Putra",
-    total: 32
-  },
-  {
-    id: 2,
-    name: "Dewasa - Putri",
-    total: 14
-  },
-  {
-    id: 3,
-    name: "Anak - Putra",
-    total: 63
-  },
-  {
-    id: 4,
-    name: "Anak - Putri",
-    total: 21
-  },
-  {
-    id: 5,
-    name: "Gagrag Mataram",
-    total: 12
-  }
-]
+onMounted(() => {
+    appStore.fetchLeaderboards();
+})
+
+const handleCategories = (id: number | string, name?: string, total_participant?: number | string) => {
+  navigateTo({
+    path: '/leaderboard/' + id,
+    query: {
+      event_name: appStore.leaderboardEventInfo?.name,
+      category_name: name,
+      total_participant: total_participant
+    },
+  });
+}
 
 </script>
