@@ -178,6 +178,7 @@
 
 <script setup lang="ts">
 const route = useRoute()
+const router = useRouter()
 
 // bikin computed biar reactive
 const rambahanId = computed(() => route.params.id)
@@ -220,4 +221,24 @@ const clearAll = () => {
   panahFour.value = ""
   panahFourTouched.value = false
 }
+
+// ✅ Tambahkan handler untuk mencegah refresh tanpa konfirmasi
+onMounted(() => {
+  const handler = (event: BeforeUnloadEvent) => {
+    event.preventDefault()
+    event.returnValue =
+      "Apakah Anda yakin ingin merefresh halaman ini? Karena jika di refresh datanya akan dianggap sudah di submit."
+  }
+  window.addEventListener("beforeunload", handler)
+
+  // tambahan: kalau user beneran confirm refresh → redirect ke scan peserta
+  window.addEventListener("unload", () => {
+    router.replace("/")
+  })
+
+  onBeforeUnmount(() => {
+    window.removeEventListener("beforeunload", handler)
+  })
+})
+
 </script>

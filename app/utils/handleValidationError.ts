@@ -5,6 +5,7 @@ export function handleValidationError(
 ): void {
   const route = useRoute();
 
+  console.log(error);
   if (error.code === 403 || error.code === 400) {
     if (Array.isArray(error?.message) && error.message.length === 0) {
       notify.error(error.errors[0].title);

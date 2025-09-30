@@ -6,4 +6,9 @@ const urlApiScoringRambahan = urlApiScoring + '/rambahan';
 // Leaderboard
 const urlApiLeaderboard = '/v1/leaderboard';
 
-export { urlApiScoring, urlApiScoringRambahan, urlApiLeaderboard };
+// Scoring
+const urlApiScoringScan = urlApiScoring + '/scan';
+const urlApiScoringInput = urlApiScoring + '/input';
+
+
+export { urlApiScoring, urlApiScoringRambahan, urlApiLeaderboard, urlApiScoringScan, urlApiScoringInput };

@@ -29,7 +29,7 @@
 
     <div class="fixed w-full z-10 bottom-0 left-0 bg-grey py-4">
       <AppContainer>
-        <Button class="w-full flex items-center gap-1" type="button" @click="router.push(`/rambahan/${rambahanId}/scan-error`) ">
+        <Button class="w-full flex items-center gap-1" type="button" @click="router.push(`/rambahan/${rambahanId}/scan`) ">
           <Icon name="heroicons:viewfinder-circle" class="text-2xl" />
           <span>Scan Peserta</span>
         </Button>

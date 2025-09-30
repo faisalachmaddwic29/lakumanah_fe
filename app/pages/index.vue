@@ -29,7 +29,9 @@
 
       <!-- List Rambahan -->
       <div class="px-4 relative flex-1 my-4 w-full h-full">
-        <ContentsHomeRambahan :total="appStore.eventRambahan.length" />
+        <CardListLoading v-if="!appStore.isEventLoaded" :length="10"  />
+        <ContentsHomeRambahan v-else :total="appStore.eventRambahan.length" />
+
       </div>
     </div>
   </div>

@@ -1,5 +1,7 @@
 <template>
-  <div class="w-full min-h-screen bg-black flex flex-col justify-between items-center p-4 relative">
+  <div
+    class="w-full min-h-screen bg-black flex flex-col justify-between items-center p-4 relative"
+  >
     <!-- Tombol X -->
     <button
       class="absolute top-4 right-4 bg-white/50 hover:bg-white/80 hover:text-red-500 text-white rounded-full p-2 cursor-pointer size-[32px] flex items-center"
@@ -15,7 +17,9 @@
         <p class="text-white text-2xl font-bold font-lato">Lakumanah</p>
       </div>
       <p class="text-white mt-4">
-        {{ activeTab === 'scan' ? 'Arahkan kamera ke QR peserta' : 'Masukkan nomor target' }}
+        {{
+          activeTab === "scan" ? "Arahkan kamera ke QR peserta" : "Masukkan nomor target"
+        }}
       </p>
     </div>
 
@@ -23,49 +27,49 @@
     <div class="relative flex justify-center items-center flex-1 w-full">
       <!-- Scan QR -->
       <template v-if="activeTab === 'scan'">
-        <!-- Kamera -->
-        <!-- <QrcodeStream class="w-full h-full object-cover rounded-xl" @decode="onDecode" @error="onError" /> -->
-        <div class="relative w-full max-w-md aspect-square">
-        <!-- Kamera -->
-          <div class="flex flex-col items-center">
+        <div
+          class="relative flex flex-col items-center justify-center w-full h-full py-6"
+        >
+          <!-- Kotak kamera -->
+          <div class="relative w-96 h-96 rounded-lg">
             <QrcodeStream
-              class="w-80 h-80 rounded-xl overflow-hidden"
-              :paused="paused"
+              class="w-96 h-96 object-cover"
               @detect="onDetect"
               @init="onInit"
             />
 
-            <div v-if="result" class="mt-4 p-3 bg-white rounded-lg shadow">
-              <p class="text-sm font-semibold">Hasil:</p>
-              <a
-                v-if="isUrl(result)"
-                :href="result"
-                target="_blank"
-                class="text-blue-600 underline break-all"
-              >
-                {{ result }}
-              </a>
-              <p v-else>{{ result }}</p>
-            </div>
-          </div>
-      </div>
-
-
-        <!-- Overlay Scanner -->
-        <div class="absolute inset-0 flex justify-center items-center">
-          <div class="w-74 h-72 border-2 border-transparent relative">
             <!-- Corner borders -->
-            <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-white rounded-tl-lg" />
-            <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-white rounded-tr-lg" />
-            <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-white rounded-bl-lg" />
-            <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-white rounded-br-lg" />
+            <div
+              class="absolute top-[-6px] left-[-6px] w-10 h-10 border-t-6 border-l-6 border-white rounded-tl"
+            />
+            <div
+              class="absolute top-[-6px] right-[-6px] w-10 h-10 border-t-6 border-r-6 border-white rounded-tr"
+            />
+            <div
+              class="absolute bottom-[-6px] left-[-6px] w-10 h-10 border-b-6 border-l-6 border-white rounded-bl"
+            />
+            <div
+              class="absolute bottom-[-6px] right-[-6px] w-10 h-10 border-b-6 border-r-6 border-white rounded-br"
+            />
           </div>
+
+          <!-- Hasil scan -->
+          <!-- <div
+            v-if="result"
+            class="mt-6 w-11/12 max-w-md p-3 bg-white rounded-lg shadow"
+          >
+            <p class="text-sm font-semibold">Hasil:</p>
+            <p>{{ result }}</p>
+          </div> -->
         </div>
       </template>
 
       <!-- Input Manual -->
       <template v-else>
-        <form class="w-full max-w-md bg-white p-6 rounded-xl shadow-md" @submit="onSubmit">
+        <form
+          class="w-full max-w-md bg-white p-6 rounded-xl shadow-md"
+          @submit="onSubmit"
+        >
           <FormInput
             id="no_target"
             v-model="no_target"
@@ -75,8 +79,11 @@
             name="no_target"
             placeholder="Masukkan Nomor Target"
             :error="errors.no_target"
+            @input="(e: Event) => no_target = (e.target as HTMLInputElement).value.toUpperCase()"
           />
-          <Button class="w-full mt-4" type="submit" :disabled="!isFormFull">{{ isLoading ? 'Loading...' : 'Submit' }}</Button>
+          <Button class="w-full mt-4" type="submit" :disabled="!isFormFull">{{
+            isLoading ? "Loading..." : "Submit"
+          }}</Button>
         </form>
       </template>
     </div>
@@ -106,7 +113,7 @@
 
 <script setup lang="ts">
 // import { StreamBarcodeReader } from "vue-barcode-reader"
-import { QrcodeStream } from "vue-qrcode-reader"
+import { QrcodeStream, type DetectedBarcode } from "vue-qrcode-reader"
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import { z } from 'zod'
@@ -125,7 +132,6 @@ const changeTab = (tab: 'scan' | 'manual') => {
 const route = useRoute()
 const rambahanId = computed(() => route.params.id)
 const loadingStore = useLoadingStore()
-const router = useRouter()
 const isLoading = ref(false)
 
 
@@ -149,80 +155,73 @@ const isFormFull = computed(() => {
 
 const [no_target] = defineField('no_target')
 
-const onSubmit = handleSubmit(async (values) => {
-
-  router.push(`/rambahan/${rambahanId.value}/scoring`);
-	loadingStore.start();
+const hitApiScoring = async (arrow_id: string) => {
+  loadingStore.start();
 	isLoading.value = true
 
 	try {
-		const response = await apiLakumanah.post(urlAuthLogin, {
-			"no_target": values.no_target,
+    const response = await apiLakumanah.post(urlApiScoringScan, {
+      "arrow_id": arrow_id,
+      "rambahan": rambahanId.value
+
 		});
 
 		const { data , message } = response;
     console.log(data);
 
-		  // Simpan token ke cookie dan state
-
-
 		notify.success(message);
-
-		await router.replace('/');
+    navigateTo({
+      path: '/rambahan/' + rambahanId.value + '/scoring',
+      query: {
+        arrow_id: arrow_id,
+        rambaha: rambahanId.value
+      },
+      replace: true
+    });
+    // router.push(`/rambahan/${rambahanId.value}/scoring`);
 
 	} catch (error: unknown) {
 		handleValidationError(error, setErrors)
+
+    navigateTo({
+      path: '/rambahan/' + rambahanId.value + '/scan-error',
+      query: {
+        message: error.message,
+      },
+      replace: true
+    });
 
 		// Handle error (bisa tambahkan toast/notification)
 	} finally {
 		isLoading.value = false
 		loadingStore.stop();
 	}
+}
+
+const onSubmit = handleSubmit(async (values) => {
+  await hitApiScoring(values.no_target);
 });
 
-
-const result = ref("")
-const paused = ref(false) // 👉 kontrol scanner
-let resetTimer: any = null
-
-const isUrl = (text: string) => {
-  try {
-    new URL(text)
-    return true
-  } catch {
-    return false
-  }
+// dipanggil saat kamera berhasil diinisialisasi
+function onInit(promise: Promise<void>): void {
+  promise
+    .then(() => {
+      console.log("Kamera siap dipakai")
+    })
+    .catch((err: unknown) => {
+      console.error("Gagal inisialisasi kamera:", err)
+    })
 }
 
-const showResult = (value: string) => {
-  result.value = value
-  paused.value = true // 🚨 stop scanner biar cache reset
+// dipanggil saat QR code terdeteksi
+async function onDetect(detectedCodes: DetectedBarcode[]): Promise<void> {
+  if (!detectedCodes || detectedCodes.length === 0) return
 
-  // auto resume setelah 1.5 detik
-  if (resetTimer) clearTimeout(resetTimer)
-  resetTimer = setTimeout(() => {
-    result.value = ""
-    paused.value = false // 🚀 nyalain lagi biar bisa scan ulang QR yang sama
-  }, 1500)
+  const [firstCode] = detectedCodes
+  if (!firstCode) return
+
+  const code: string = firstCode.rawValue
+
+  await hitApiScoring(code);
 }
-
-const onDetect = (codes) => {
-  if (!codes.length) return
-
-  const value = codes[0].rawValue
-  if (value) {
-    console.log("👀 QR detect:", value)
-    showResult(value)
-  }
-}
-
-const onInit = async (promise) => {
-  try {
-    await promise
-    console.log("✅ Kamera aktif")
-  } catch (err) {
-    console.error("🚨 Gagal buka kamera:", err)
-  }
-}
-
 </script>

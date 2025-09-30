@@ -23,13 +23,13 @@
 
       <div class="text-center mt-5">
         <h3 class="mb-2.5 text-xl font-bold">Terjadi Kesalahan</h3>
-        <p class="text-base font-light">Silakan coba lagi beberapa saat lagi.</p>
+        <p class="text-base font-light">{{ messageError || "Silakan coba lagi beberapa saat lagi." }}</p>
       </div>
     </div>
 
     <div class="fixed w-full z-10 bottom-0 left-0 bg-grey py-4">
       <AppContainer>
-        <Button class="w-full flex items-center gap-1" type="button" @click="router.push(`/rambahan/${rambahanId}/scan`) ">
+        <Button class="w-full flex items-center gap-1" type="button" @click="router.replace(`/rambahan/${rambahanId}/scan`) ">
           <Icon name="heroicons:viewfinder-circle" class="text-2xl" />
           <span>Scan Ulang Peserta</span>
         </Button>
@@ -45,6 +45,7 @@ const router = useRouter()
 
 // bikin computed biar reactive
 const rambahanId = computed(() => route.params.id)
+const messageError = computed(() => route.query.message)
 
 const title = computed(() => `Detail Rambahan ke-${rambahanId.value}`)
 
