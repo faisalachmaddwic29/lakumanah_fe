@@ -117,6 +117,7 @@ import { QrcodeStream, type DetectedBarcode } from "vue-qrcode-reader"
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import { z } from 'zod'
+import type { ScanResponse } from "~/types/api/participant"
 
 const activeTab = ref<'scan' | 'manual'>('scan')
 const changeTab = (tab: 'scan' | 'manual') => {
@@ -132,6 +133,7 @@ const changeTab = (tab: 'scan' | 'manual') => {
 const route = useRoute()
 const rambahanId = computed(() => route.params.id)
 const loadingStore = useLoadingStore()
+const participantStore = useParticipantStore();
 const isLoading = ref(false)
 
 
@@ -160,29 +162,26 @@ const hitApiScoring = async (arrow_id: string) => {
 	isLoading.value = true
 
 	try {
-    const response = await apiLakumanah.post(urlApiScoringScan, {
+    const response = await apiLakumanah.post<ScanResponse>(urlApiScoringScan, {
       "arrow_id": arrow_id,
       "rambahan": rambahanId.value
 
 		});
 
 		const { data , message } = response;
-    console.log(data);
 
 		notify.success(message);
+
+    participantStore.setParticipant(data?.participant);
+    participantStore.setEventInfo(data?.event_info);
     navigateTo({
       path: '/rambahan/' + rambahanId.value + '/scoring',
-      query: {
-        arrow_id: arrow_id,
-        rambaha: rambahanId.value
-      },
       replace: true
     });
     // router.push(`/rambahan/${rambahanId.value}/scoring`);
 
 	} catch (error: unknown) {
-		handleValidationError(error, setErrors)
-
+    participantStore.reset();
     navigateTo({
       path: '/rambahan/' + rambahanId.value + '/scan-error',
       query: {
@@ -190,6 +189,8 @@ const hitApiScoring = async (arrow_id: string) => {
       },
       replace: true
     });
+    handleValidationError(error, setErrors)
+
 
 		// Handle error (bisa tambahkan toast/notification)
 	} finally {
@@ -224,4 +225,9 @@ async function onDetect(detectedCodes: DetectedBarcode[]): Promise<void> {
 
   await hitApiScoring(code);
 }
+
+onMounted(() => {
+  // Reset setiap kali halaman di-load
+  participantStore.reset();
+})
 </script>

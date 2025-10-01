@@ -58,5 +58,4 @@ useSeoMeta({
   title: title.value,
 })
 
-console.log("ID Rambahan:", rambahanId.value)
 </script>
