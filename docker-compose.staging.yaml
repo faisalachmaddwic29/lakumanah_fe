@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  scoringkp-fe:
+    build: .
+    container_name: scoringkp-fe
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3002
+    expose:
+      - "3002"
+    networks:
+      - scoringkp-net
+      - caddy
+    labels:
+      caddy: gladhenkpdev.lakumanah.com
+      caddy.reverse_proxy: "{{upstreams 3002}}"
+    restart: always
+
+networks:
+  scoringkp-net:
+    driver: bridge
+  caddy:
+    external: true
