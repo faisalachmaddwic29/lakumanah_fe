@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   scoringkp-fe:
@@ -13,7 +13,7 @@ services:
       - scoringkp-net
       - caddy
     labels:
-      caddy: gladhenkp.lakumanah.com
+      caddy: scoringkp.lakumanah.com
       caddy.reverse_proxy: "{{upstreams 3000}}"
     restart: always
 
