@@ -24,7 +24,7 @@
 
       <!-- List Categories -->
       <div class="flex flex-col gap-y-2.5 w-full text-[#627086] font-lato">
-        <p class="text-base font-bold">Kategori</p>
+        <p v-if="appStore.leaderboardCategories.length > 0" class="text-base font-bold">Kategori</p>
 
         <!-- Listnya -->
         <CardListLoading v-if="!appStore.isLeaderboardLoaded" :length="5"  />

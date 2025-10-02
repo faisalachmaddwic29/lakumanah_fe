@@ -3,9 +3,9 @@
     <NuxtImg src="/images/auth/cities.png" alt="line" class="w-full pt-3" />
 
       <div class="content-community flex flex-col gap-2.5 p-3 bg-white">
-        <h3 class="font-bold text-lg leading-tight">Gladhen Kulonprogo 2025</h3>
+        <h3 v-if="props.event" class="font-bold text-lg leading-tight">{{ props.event?.name }}</h3>
 
-        <LabelIcon class="w-full items-center text-dark-grey">
+        <LabelIcon v-if="props.event" class="w-full items-center text-dark-grey">
           <template #icon>
             <NuxtImg src="/icons/map-pin.svg" alt="location" class="size-6 mt-0.5" />
           </template>
@@ -16,7 +16,7 @@
           </template>
         </LabelIcon>
 
-        <LabelIcon class="w-full items-center text-dark-grey">
+        <LabelIcon v-if="props.event" class="w-full items-center text-dark-grey">
           <template #icon>
             <NuxtImg src="/icons/user-group.svg" alt="user-group" class="size-6 mt-0.5" />
           </template>
@@ -27,7 +27,7 @@
           </template>
         </LabelIcon>
 
-        <LabelIcon class="w-full items-center text-dark-grey">
+        <LabelIcon v-if="props.event" class="w-full items-center text-dark-grey">
           <template #icon>
             <NuxtImg src="/icons/calendar-days.svg" alt="calendar-days" class="size-6 mt-0.5" />
           </template>
