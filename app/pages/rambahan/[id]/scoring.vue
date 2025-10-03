@@ -302,10 +302,10 @@ const storeScore = async () => {
     const response = await apiLakumanah.post(urlApiScoringInput, {
       "arrow_id": participant.value?.arrow_id,
       "rambahan": rambahanId.value,
-      "arrow1": panahOne.value,
-      "arrow2": panahTwo.value,
-      "arrow3": panahThree.value,
-      "arrow4": panahFour.value
+      "arrow1": panahOne?.value ?? 0,
+      "arrow2": panahTwo?.value ?? 0,
+      "arrow3": panahThree?.value ?? 0,
+      "arrow4": panahFour?.value ?? 0
 
 		});
 
