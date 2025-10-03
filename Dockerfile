@@ -11,9 +11,4 @@ COPY . .
 
 RUN npm run build --verbose
 
-RUN npm install pm2 -g
-
-# CMD ["pm2-runtime","start", "ecosystem.config.js"]
-# CMD ["node", "./.output/server/index.mjs"]
-
 CMD ["npx", "pm2-runtime", "./.output/server/index.mjs"]
