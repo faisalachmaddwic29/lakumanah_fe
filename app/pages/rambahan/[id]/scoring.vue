@@ -271,23 +271,50 @@ const clearAll = () => {
 };
 
 // ✅ Tambahkan handler untuk mencegah refresh tanpa konfirmasi
+// onMounted(() => {
+//   if (!authStore.user) {
+//     authStore.getUser();
+//   }
+
+//   const handler = (event: BeforeUnloadEvent) => {
+//     event.preventDefault();
+//     event.returnValue =
+//       "Apakah Anda yakin ingin merefresh halaman ini? Karena jika di refresh datanya akan dianggap sudah di submit.";
+//   };
+//   window.addEventListener("beforeunload", handler);
+
+//   // tambahan: kalau user beneran confirm refresh → redirect ke scan peserta
+//   window.addEventListener("unload", () => {
+//     participantStore.reset();
+//     router.replace("/");
+//   });
+
+//   onBeforeUnmount(() => {
+//     window.removeEventListener("beforeunload", handler);
+//   });
+// });
+
+
 onMounted(() => {
   if (!authStore.user) {
     authStore.getUser();
+  }
+
+  // Jika refresh sebelumnya terdeteksi → redirect ke halaman scan
+  if (sessionStorage.getItem(sessionRefresh) === "true") {
+    sessionStorage.removeItem(sessionRefresh);
+    participantStore.reset();
+    router.replace("/");
   }
 
   const handler = (event: BeforeUnloadEvent) => {
     event.preventDefault();
     event.returnValue =
       "Apakah Anda yakin ingin merefresh halaman ini? Karena jika di refresh datanya akan dianggap sudah di submit.";
+    sessionStorage.setItem(sessionRefresh, "true");
   };
-  window.addEventListener("beforeunload", handler);
 
-  // tambahan: kalau user beneran confirm refresh → redirect ke scan peserta
-  window.addEventListener("unload", () => {
-    participantStore.reset();
-    router.replace("/");
-  });
+  window.addEventListener("beforeunload", handler);
 
   onBeforeUnmount(() => {
     window.removeEventListener("beforeunload", handler);
