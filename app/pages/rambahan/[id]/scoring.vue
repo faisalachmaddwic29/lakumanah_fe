@@ -244,13 +244,13 @@ useSeoMeta({
   title: title.value,
 });
 
-const panahOne = ref("");
+const panahOne = ref(null);
 const panahOneTouched = ref(false);
-const panahTwo = ref("");
+const panahTwo = ref(null);
 const panahTwoTouched = ref(false);
-const panahThree = ref("");
+const panahThree = ref(null);
 const panahThreeTouched = ref(false);
-const panahFour = ref("");
+const panahFour = ref(null);
 const panahFourTouched = ref(false);
 const errors = reactive({
   panahOne: "",
@@ -260,13 +260,13 @@ const errors = reactive({
 });
 
 const clearAll = () => {
-  panahOne.value = "";
+  panahOne.value = null;
   panahOneTouched.value = false;
-  panahTwo.value = "";
+  panahTwo.value = null;
   panahTwoTouched.value = false;
-  panahThree.value = "";
+  panahThree.value = null;
   panahThreeTouched.value = false;
-  panahFour.value = "";
+  panahFour.value = null;
   panahFourTouched.value = false;
 };
 
